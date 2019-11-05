@@ -1,9 +1,13 @@
 package com.example.quizapp;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,18 +25,27 @@ public class MainActivity extends AppCompatActivity {
     // MARK: Debug info
     private final String TAG="QUIZ";
 
+private QuestionsLib lib = new QuestionsLib();
+TextView tv;
+    TextView scoreview;
+private int questionnum = 0;
+    private int score = 0;
+    ImageView imageView;
+            Bitmap image;
     // MARK: Particle Account Info
-    private final String PARTICLE_USERNAME = "jenelleteaches@gmail.com";
-    private final String PARTICLE_PASSWORD = "nonsense1234";
+    private final String PARTICLE_USERNAME = "prudhvi.satram1995@gmail.com";
+    private final String PARTICLE_PASSWORD = "Prudhvi@2914";
 
     // MARK: Particle device-specific info
-    private final String DEVICE_ID = "36001b001047363333343437";
+    private final String DEVICE_ID = "22003f001247363333343437";
 
     // MARK: Particle Publish / Subscribe variables
     private long subscriptionId;
 
     // MARK: Particle device
     private ParticleDevice mDevice;
+
+    TextView result ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +58,28 @@ public class MainActivity extends AppCompatActivity {
         // 2. Setup your device variable
         getDeviceFromCloud();
 
+        result = findViewById(R.id.result);
+
+        scoreview = findViewById(R.id.congo);
+        tv = findViewById(R.id.question);
+
+        imageView = findViewById(R.id.imageView);
+
+
     }
+
+    private String mChoices [][] = {
+            {"a", "b"},
+            {"a", "b"},
+
+    };
+
+
+
+    private void updateScore(int point) {
+        scoreview.setText("" + score);
+    }
+
 
 
     /**
@@ -91,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 // --------------------------------------------
                 List<String> functionParameters = new ArrayList<String>();
                 functionParameters.add("green");
+
+                result.setText("Correct");
+
                 try {
                     mDevice.callFunction("answer", functionParameters);
 
@@ -116,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     public void turnParticleRed() {
 
         Async.executeAsync(ParticleCloudSDK.getCloud(), new Async.ApiWork<ParticleCloud, Object>() {
@@ -125,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 // --------------------------------------------
                 List<String> functionParameters = new ArrayList<String>();
                 functionParameters.add("red");
+                result.setText("Wrong Answer");
                 try {
                     mDevice.callFunction("answer", functionParameters);
 
@@ -153,6 +193,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void updateQuestion(){
+
+
+                    imageView.setImageResource(R.drawable.triangle);
+                    result.setText("");
+                    tv.setText("How many Sides on the above image ? " +
+                            "\n A. 3 \n B. 4\n\n" +
+                            "Enter your response using the Particle.\n\n" +
+                            "(A = Button 1, B = Button 0)");
+
+
+    }
+
+    public void moveToNext(){
+        Intent intent = new Intent(getApplicationContext(),SecondActivity.class);
+        startActivity(intent);
+
+
+
+    }
 
 
 
@@ -163,6 +223,8 @@ public class MainActivity extends AppCompatActivity {
                 subscriptionId = ParticleCloudSDK.getCloud().subscribeToAllEvents(
                         "playerChoice",  // the first argument, "eventNamePrefix", is optional
                         new ParticleEventHandler() {
+
+
                             public void onEvent(String eventName, ParticleEvent event) {
                                 Log.i(TAG, "Received event with payload: " + event.dataPayload);
                                 String choice = event.dataPayload;
@@ -171,6 +233,16 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else if (choice.contentEquals("B")) {
                                     turnParticleRed();
+                                }
+                                else if (choice.contentEquals("true")) {
+
+                                    updateQuestion();
+
+                                }
+                                else if (choice.contentEquals("next")) {
+
+                                    moveToNext();
+
                                 }
 
                             }
@@ -195,4 +267,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
