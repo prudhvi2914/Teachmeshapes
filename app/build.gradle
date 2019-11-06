@@ -36,4 +36,5 @@ dependencies {
 
     // include the Particle Cloud SDK library
     implementation('io.particle:cloudsdk:0.5.1')
+    implementation 'com.android.support:design:28.0.0'
 }

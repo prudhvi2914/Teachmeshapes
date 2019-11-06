@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
     // MARK: Debug info
     private final String TAG="QUIZ";
 
-private QuestionsLib lib = new QuestionsLib();
-TextView tv;
+    TextView tv;
     TextView scoreview;
 private int questionnum = 0;
     private int score = 0;
     ImageView imageView;
             Bitmap image;
+            Button b;
     // MARK: Particle Account Info
     private final String PARTICLE_USERNAME = "prudhvi.satram1995@gmail.com";
     private final String PARTICLE_PASSWORD = "Prudhvi@2914";
@@ -64,6 +66,14 @@ private int questionnum = 0;
         tv = findViewById(R.id.question);
 
         imageView = findViewById(R.id.imageView);
+        b = findViewById(R.id.button);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),Main3Activity.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
